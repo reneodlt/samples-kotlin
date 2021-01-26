@@ -1,5 +1,7 @@
 package net.corda.samples.obligation.flow
 
+import com.reneodlt.cordium.test.CordiumCordapp
+import com.reneodlt.cordium.test.runIndefinitely
 import groovy.util.GroovyTestCase.assertEquals
 import net.corda.samples.obligation.flows.IOUIssueFlowResponder
 import net.corda.core.contracts.Command
@@ -36,7 +38,7 @@ class IOUIssueFlowTests {
             listOf("net.corda.samples.obligation"),
             notarySpecs = listOf(MockNetworkNotarySpec(CordaX500Name("Notary","London","GB")))
         )
-        a = mockNetwork.createNode(MockNodeParameters())
+        a = mockNetwork.createNode(MockNodeParameters(additionalCordapps = listOf(CordiumCordapp(10000))))
         b = mockNetwork.createNode(MockNodeParameters())
         val startedNodes = arrayListOf(a, b)
         // For real nodes this happens automatically, but we have to manually register the flow for tests
@@ -89,6 +91,8 @@ class IOUIssueFlowTests {
             borrower.owningKey,
             mockNetwork.defaultNotaryNode.info.legalIdentitiesAndCerts.first().owningKey
         )
+
+        mockNetwork.runIndefinitely()
     }
 
     /**
